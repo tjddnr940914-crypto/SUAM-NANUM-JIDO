@@ -220,8 +220,20 @@ aside{display:flex;flex-direction:column;min-height:0;background:var(--paper);
 }
 #lg-btn{display:none}
 @media (max-width:860px){
+  /* 1. 화면 비율 수정 */
   main{grid-template-columns:1fr;grid-template-rows:35vh minmax(0,1fr);height:100%;min-height:0;gap:.5rem;padding:.5rem}
   aside{order:2}
+  
+  /* 2. 접기 버튼 및 한 줄 스크롤 디자인 추가 */
+  #toggle-tools{display:block!important; width:100%; padding:.6rem; background:var(--mint-2); border:none; font-weight:800; color:var(--ink); font-size:.85rem; border-radius:var(--r-lg) var(--r-lg) 0 0; cursor:pointer;}
+  .tools{transition: max-height 0.3s; overflow:hidden;}
+  .tools.folded{display:none!important;}
+  .chips{flex-wrap:nowrap!important; overflow-x:auto!important; padding-bottom:.4rem; white-space:nowrap; -webkit-overflow-scrolling:touch;}
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{flex-shrink:0;}
+
+  /* 원래 있던 #card 부분은 그대로 둡니다 */
+  #card{width:auto;left:12px}
   #card{width:auto;left:12px}
   header{padding:.55rem .7rem;gap:.5rem}
   .plate{font-size:1.12rem;padding:.4rem .8rem;border-radius:12px}
@@ -342,8 +354,9 @@ aside,#mapwrap{border:1.5px solid #D5C6E0;background:#FFFFFF}
 
   <main>
     <aside>
-      <div class="tools">
-        <input id="q" type="search" placeholder="🔍 가게 이름이나 골목 이름으로 찾기" autocomplete="off">
+      <button id="toggle-tools">🔍 검색 및 필터 접기 🔼</button>
+      <div class="tools" id="tools-area">
+        <input type="text" id="q" placeholder="가게 이름이나 골목 이름으로 찾기" autocomplete="off">
         <div class="chips" id="cats"></div>
         <div class="chips">
           <button class="chip alert" data-f="err" hidden>확인 필요</button>
@@ -841,8 +854,16 @@ $('#btn-reset').onclick=()=>{
   render(); $('#start').classList.add('on');
 };
 
+// ... (위쪽 코드들) ...
 render();
 if(STORES.some(s=>s.lat)) fitAll();
 else $('#start').classList.add('on');
+
+// 버튼 누르면 필터 접히고 펴지는 기능
+if($('#toggle-tools')){
+  $('#toggle-tools').onclick=()=>{
+    const t=$('#tools-area');
+    t.classList.toggle('folded');
+    $('#toggle-tools').innerHTML=t.classList.contains('folded')?'🔍 검색 및 필터 펼치기 🔽':'🔍 검색 및 필터 접기 🔼'; };}
 </script></body>
 </html>
